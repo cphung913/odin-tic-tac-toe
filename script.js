@@ -4,6 +4,7 @@ const gameManager = (() => {
 
     function switchTurn() {
         turn == 1 ? turn = 2 : turn = 1;
+        interface.changeTurn(turn);
         increaseMove();
     }
 
@@ -39,10 +40,11 @@ const gameManager = (() => {
         if (winner != undefined) endGame(winner);
     }
 
-    function endGame(winner) {
+    async function endGame(winner) {
+        interface.displayWinner(winner);
         moveCount = 0;
         turn = 1;
-        gameBoard.resetBoard()
+        interface.changeTurn(1);
     }
 
     return { getTurn, switchTurn, checkWin }
@@ -59,6 +61,9 @@ const gameBoard = (() => {
     function setBoard() {
         for (let i = 0; i < tiles.length; i++) {
             tiles[i].textContent = boardValues[i];
+            tiles[i].classList.remove("red");
+            tiles[i].classList.remove("blue");
+            tiles[i].classList.add(boardValues[i] == "X" ? "red" : "blue");
         }
     }
     
@@ -68,7 +73,7 @@ const gameBoard = (() => {
         boardValues[index] = (gameManager.getTurn() == 1 ? "X" : "O");
         setBoard();
         gameManager.switchTurn();
-        console.log(gameManager.checkWin(boardValues));
+        gameManager.checkWin(boardValues);
     }
 
     function resetBoard() {
@@ -77,4 +82,48 @@ const gameBoard = (() => {
     }
 
     return { resetBoard }
+})()
+
+const interface = (() => {
+    const turnText = document.querySelector(".text");
+    const winnerText = document.querySelector(".winner");
+    const overlay = document.querySelector(".overlay");
+
+    changeTurn(1);
+
+    function displayWinner(winner) {
+        winnerText.classList.remove("blue");
+        winnerText.classList.remove("red");
+        winnerText.classList.remove("neutral");
+        if (winner == 1) {
+            winnerText.textContent ="Player One Wins!";
+            winnerText.classList.add("red");
+        } else if (winner == 2) {
+            winnerText.textContent ="Player Two Wins!";
+            winnerText.classList.add("blue");
+        } else {
+            winnerText.textContent ="Draw!";
+            winnerText.classList.add("neutral");
+        }
+
+        overlay.classList.add("active");
+        winnerText.classList.add("active");
+        setTimeout(() => overlay.addEventListener("click", endDisplay), "1000");
+    }
+
+    function changeTurn(turn) {
+        turnText.classList.remove("red");
+        turnText.classList.remove("blue");
+        turnText.textContent = turn == 1 ? "Player One Move" : "Player Two Move";
+        turnText.classList.add(turn == 1 ? "red" : "blue");
+    }
+
+    function endDisplay() {
+        gameBoard.resetBoard();
+        overlay.removeEventListener("click", endDisplay);
+        overlay.classList.remove("active");
+        winnerText.classList.remove("active");
+    }
+
+    return { displayWinner, changeTurn };
 })()

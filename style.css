@@ -1,5 +1,7 @@
 :root {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
+    --red: rgb(255, 92, 92);
+    --blue: rgb(61, 119, 255);
 }
 
 body {
@@ -13,6 +15,7 @@ header {
     font-size: 5rem;
     font-weight: bold;
     margin: 2rem;
+    color: var(--blue);
 }
 
 .board {
@@ -35,4 +38,55 @@ header {
 .box {
     background-color: white;
     border-radius: 5px;
+    font-size: 120px;
+    text-align: center;
+    line-height: 156px;
+    font-weight: bold;
+}
+
+span {
+    color: var(--red);
+}
+
+.overlay {
+    position: fixed;
+    background-color: rgba(0, 0, 0, 0);
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    transition: 300ms ease-in-out;
+    pointer-events: none;
+}
+
+.overlay.active {
+    pointer-events: all;
+    background-color: rgba(0, 0, 0, 0.25);
+}
+
+.winner {
+    position: fixed;
+    top: 40%;
+    bottom: 50%;
+    transform: scale(0%); 
+    font-size: 8rem;
+    font-weight: bold;
+    transition: 300ms ease-in-out;
+    line-height: 4rem;
+}
+
+.winner.active {
+    transform: scale(100%);
+}
+
+.red {
+    color: var(--red);
+}
+
+.neutral {
+    color: grey;
+}
+
+.blue {
+    color: var(--blue);
 }
